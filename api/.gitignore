@@ -1,0 +1,4 @@
+__pycache__/
+db.json
+app_config.py
+*.pyc

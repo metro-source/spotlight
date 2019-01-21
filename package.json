@@ -1,0 +1,23 @@
+{
+  "name": "spotlight",
+  "version": "1.0.0",
+  "description": "Web app to make budgets",
+  "main": "index.js",
+  "author": "Metro",
+  "license": "MIT",
+  "private": true,
+
+  "scripts": {
+    "start": "webpack-dev-server --open"
+  },
+
+  "dependencies": {
+  },
+  "devDependencies": {
+    "css-loader": "^2.1.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.29.0",
+    "webpack-dev-server": "^3.1.14",
+    "webpack-cli": "^3.2.1"
+  }
+}
