@@ -1,5 +1,9 @@
 from kernel import db
 from mixins import Timestamps
+import datetime
+
+class Model:
+    id = db.Column(db.Integer, primary_key=True)
 
 # class User(db.Model):
 #     __tablename__ = 'users'
@@ -25,5 +29,29 @@ class Rate(db.Model, Timestamps):
 
     id = db.Column(db.Integer, primary_key=True)
     price_per_coin = db.Column(db.Integer, primary_key=True)
+
+    def is_expired(self):
+        """
+        Returns True if the current rate is expired (older than a defined amount of time)
+        """
+        delta = datetime.datetime.now() - self.created_at
+
+        return delta.total_seconds() > 15*60
+
+class BudgetItem(db.Model, Model):
+    __tablename__ = "budget_items"
+
+    label = db.Column(db.String(200))
+    ves = db.Column(db.Integer)
+    budget_id = db.Column(db.Integer, db.ForeignKey("budgets.id"))
+    
+    budget = db.relationship("Budget", back_populates="items")
+
+class Budget(db.Model, Model):
+    __tablename__ = "budgets"
+
+    title = db.Column(db.String(200))
+
+    items = db.relationship("BudgetItem", back_populates="budget")
 
 db.create_all()

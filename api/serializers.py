@@ -28,4 +28,12 @@ class BaseSerializer():
 class RateSerializer(BaseSerializer):
     def register_fields(self):
         self.add_fields(['id', 'created_at', 'price_per_coin'])
+
+class BudgetItemSerializer(BaseSerializer):
+    def register_fields(self):
+        self.add_fields(['id', 'label', 'ves'])
+
+class BudgetSerializer(BaseSerializer):
+    def register_fields(self):
+        self.add_fields(['id', 'title', 'items'])
     

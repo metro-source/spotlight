@@ -12,7 +12,7 @@ from flask.json import jsonify
 def get_rate():
     last_rate = models.Rate.query.order_by(models.Rate.id.desc()).first()
 
-    if last_rate is None:
+    if last_rate is None or last_rate.is_expired():
         last_rate = models.Rate()
         last_rate.price_per_coin = rates.get_ves_rate()
         
@@ -26,6 +26,10 @@ def create_user():
     params = request.get_json()
 
     user = models.User()
+
+@app.route("/api/create_list", methods=["POST"])
+def create_list():
+    params = request.get_json()
 
     user.name = params['name']
     user.email = params['email']
