@@ -19,13 +19,16 @@ class BudgetItem extends HTMLElement {
             :host {
                 display: grid;
                 grid-template-columns: auto 200px 200px;
-                grid-template-rows: 75px;
+                grid-template-rows: minmax(75px, auto);
                 background-color: #ececec;
                 padding: 5px;
             }
 
             h2 {
                 margin: 0;
+            }
+
+            #label {
                 padding: 23px 10px;
             }
 
@@ -48,7 +51,7 @@ class BudgetItem extends HTMLElement {
                 content: "VES ";
             }
 
-            .money-input {
+            .disposable-input {
                 width: 65%;
                 display: inline;
                 background: none;
@@ -57,10 +60,16 @@ class BudgetItem extends HTMLElement {
                 font-size: 1em;
                 font-family: sans-serif;
             }
+
+            #label-input {
+                font-size: 1.5em;
+                color: #333;
+            }
         </style>
-        <h2>Test item</h2>
-        <span id="ves" class="money ves">${this.ves}</span>
-        <span id="usd" class="money">${this.usd.toFixed(2)}</span>
+
+        <div tabindex=0 id="label"><h2>${this.label}</h2></div>
+        <div tabindex=0 id="ves" class="money ves">${this.ves}</div>
+        <div id="usd" class="money">${this.usd.toFixed(2)}</div>
         `;
     }
 
@@ -83,16 +92,34 @@ class BudgetItem extends HTMLElement {
                 this.startEditingVes();
             }
         });
+
+        this._root.querySelector("#label").addEventListener("click", () => {
+            if(!this.editingLabel) {
+                this.startEditingLabel();
+            }
+        });
+        
+        this._root.querySelector("#label").addEventListener("focus", () => {
+            if(!this.editingLabel) {
+                this.startEditingLabel();
+            }
+        });
+
+        this._root.querySelector("#ves").addEventListener("focus", () => {
+            if(!this.editingVes) {
+                this.startEditingVes();
+            }
+        });
     }
 
     startEditingVes() {
         this.editingVes = true;
 
         let input = document.createElement("input");
-        input.autofocus = true;
+        input.autoFocus = true;
         input.type = "number";
         input.id = "ves-input";
-        input.className = "money-input";
+        input.className = "disposable-input";
         input.value = this.ves;
 
 
@@ -111,12 +138,60 @@ class BudgetItem extends HTMLElement {
         const vesContainer = this._root.querySelector("#ves");
         vesContainer.innerHTML = ``;
         vesContainer.appendChild(input);
+
+        // input.focus();
     }
 
     stopEditingVes() {
         this.editingVes = false;
 
         this._root.querySelector("#ves").innerHTML = `${this.ves}`;
+    }
+
+    get label() {
+        return this._label;
+    }
+
+    set label(value) {
+        this._label = value;
+    }
+
+    startEditingLabel() {
+        this.editingLabel = true;
+
+        let input = document.createElement("input");
+        input.autofocus = true;
+        input.type = "text";
+        input.id = "label-input";
+        input.className = "disposable-input";
+        input.value = this.label;
+
+
+        input.addEventListener("keypress", (e) => {
+            if(e.key === "Escape" || e.key === "Enter") {
+                this.stopEditingLabel();
+            }
+        });
+
+        input.addEventListener("blur", () => this.stopEditingLabel())
+
+        input.addEventListener("input", (e) => {
+            this.label = e.target.value;
+        });
+
+        const labelContainer = this._root.querySelector("#label");
+        labelContainer.innerHTML = ``;
+        labelContainer.appendChild(input);
+
+        input.focus();
+    }
+
+    stopEditingLabel() {
+        this.editingLabel = false;
+
+        const labelContainer = this._root.querySelector("#label");
+
+        labelContainer.innerHTML = `<h2>${this.label}</h2>`;
     }
 }
 

@@ -16,3 +16,9 @@ fetch("/api/rate")
         appState.rate = rate.price_per_coin;
         bar.setAttribute("rate", appState.rate);
     });
+
+document.querySelector(".AddItem").addEventListener("click", () => {
+    let item = new BudgetItem();
+
+    document.querySelector(".ItemList").appendChild(item);
+})
